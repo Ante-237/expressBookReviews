@@ -60,12 +60,25 @@ return res.status(404).json({message: "Unable to register user."});
 });
 
 // Get the book list available in the shop
-public_users.get('/',function (req, res) {
-  res.end(JSON.stringify(books, null, 4));
+public_users.get('/',async function (req, res) {
+
+    try{
+        const booksData = await getBooks();
+        res.end(JSON.stringify(books, null, 4));
+    }catch(error){
+        res.status(500).json({error: "Failed to fetch books"})
+    }
+  
 });
 
+async function getBooks(){
+    return new Promise((resolve) => {
+        setTimeout(() => resolve(books), 100);
+    })
+}
+
 // Get book details based on ISBN
-public_users.get('/isbn/:isbn',function (req, res) {
+public_users.get('/isbn/:isbn', async function (req, res) {
 
   const isbn = req.params.isbn;
   if(isbn < Object.keys(books).length && isbn > 0 && isbn != null){
@@ -76,7 +89,7 @@ public_users.get('/isbn/:isbn',function (req, res) {
  });
   
 // Get book details based on author
-public_users.get('/author/:author',function (req, res) {
+public_users.get('/author/:author',async function (req, res) {
   //Write your code here
   const author = req.params.author;
   let count = 0;
@@ -103,7 +116,8 @@ public_users.get('/author/:author',function (req, res) {
 });
 
 // Get all books based on title
-public_users.get('/title/:title',function (req, res) {
+public_users.get('/title/:title',async function (req, res) {
+
    const title = req.params.title;
   let count = 0;
   const keys = Object.keys(books); 
@@ -126,6 +140,7 @@ public_users.get('/title/:title',function (req, res) {
     }
   
 });
+
 
 
 public_users.get('/review/:isbn',function (req, res) {
