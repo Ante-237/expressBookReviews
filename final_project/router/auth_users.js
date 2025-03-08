@@ -90,6 +90,22 @@ regd_users.put("/auth/review/:isbn", (req, res) => {
   
 });
 
+regd_users.delete("/auth/review/:isbn", (req, res) => {
+
+    const user = req.session.authorization.username;
+    const isbn = req.params.isbn;
+
+    if(isbn < Object.keys(books).length && isbn > 0 && isbn != null){
+    
+    books[isbn].reviews = books[isbn].reviews.filter( data => data.username != user)
+    res.status(200).json({message : "review deleted for " + user});
+  
+
+  }else{
+    res.status(300).json({message: "isbn error"});
+  }
+} );
+
 module.exports.authenticated = regd_users;
 module.exports.isValid = isValid;
 module.exports.users = users;
